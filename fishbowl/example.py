@@ -68,26 +68,42 @@ def run():
         # serial = fishbowl.get_serial_numbers()
         # print(serial)
 
-        # fishbowl.send_request(
-        #     'GetSOListRq',
+        # response = fishbowl.send_request(
+        #     "GetSOListRq",
         #     {
-        #         'DateCreatedEnd': datetime.datetime(1900, 1, 1),
-        #     }
+        #         "DateLasteModifiedBegin": datetime.datetime(2021, 5, 1),
+        #         "DateLasteModifiedEnd": datetime.datetime(2021, 5, 15),
+        #     },
         # )
+        # print("SO Response", response)
+        # response = fishbowl.get_so("10045")
+
+        # response = fishbowl.get_sales_orders_list()
+
+        # for record in fishbowl.get_sales_orders_list():
+        #     print(record["Items"])
+
+        # response = fishbowl.get_users()
+
         # fishbowl.send_request('GetPartListRq')
         # with open('LightPartListRq.xml', 'w') as f:
         #     f.write(etree.tostring(fishbowl.send_request('LightPartListRq')))
         # response = fishbowl.send_request('GetShipListRq')
 
         # products = fishbowl.get_products()
+        # print(products)
         # customers = fishbowl.get_customers_fast(
         #     populate_pricing_rules=False, populate_addresses=False
         # )
+        # print(customers)
         # rules = fishbowl.get_pricing_rules()
-        # import ipdb; ipdb.set_trace()
+        # print(rules)
 
         # response = fishbowl.send_request("CustomerNameListRq")
         # return etree.tostring(response)
+
+    # Inspect response here when possible so it closes the connection to fishbowl
+    # print(response)
 
 
 if __name__ == "__main__":

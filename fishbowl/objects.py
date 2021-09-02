@@ -174,6 +174,8 @@ class FishbowlObject(collections.Mapping):
         expected_type = getattr(expected_type, "type", expected_type)
         if expected_type is None:
             expected_type = str
+        if isinstance(expected_type, list):
+            expected_type = list
         if not isinstance(value, expected_type):
             raise ValueError("Value was not type {}".format(expected_type))
         self.mapped[key] = value
@@ -452,6 +454,19 @@ class SalesOrderItem(FishbowlObject):
 class Memo(FishbowlObject):
     fields = OrderedDict(
         [("ID", int), ("Memo", None), ("UserName", None), ("DateCreated", fishbowl_datetime),]
+    )
+
+
+class User(FishbowlObject):
+    fields = OrderedDict(
+        [
+            ("ID", int),
+            ("Email", None),
+            ("firstName", None),
+            ("lastname", None),
+            ("phone", None),
+            ("username", None),
+        ]
     )
 
 

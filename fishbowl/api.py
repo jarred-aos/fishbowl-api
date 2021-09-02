@@ -15,56 +15,18 @@ from io import StringIO
 from lxml import etree
 
 from . import jsonrequests, objects, statuscodes, xmlrequests
+from .queries import (
+    CUSTOMER_GROUP_PRICING_RULES_SQL,
+    PARTS_SQL,
+    PRICING_RULES_SQL,
+    PRODUCTS_SQL,
+    SALES_ORDER_ITEMS,
+    SALES_ORDER_LIST,
+    SERIAL_NUMBER_SQL,
+    USERS_SQL,
+)
 
 logger = logging.getLogger(__name__)
-
-PRICING_RULES_SQL = (
-    "SELECT p.id, p.isactive, product.num, "
-    "p.patypeid, p.papercent, p.pabaseamounttypeid, p.paamount, "
-    "p.customerincltypeid, p.customerinclid, p.datelastmodified "
-    "from pricingrule p INNER JOIN product on p.productinclid = product.id "
-    "where p.productincltypeid = 2 and "
-    "p.customerincltypeid in (1, 2)"
-)
-
-
-CUSTOMER_GROUP_PRICING_RULES_SQL = (
-    "SELECT p.id, p.isactive, product.num, p.patypeid, p.papercent, "
-    "p.pabaseamounttypeid, p.paamount, p.customerincltypeid, p.datelastmodified, "
-    "p.customerinclid, c.id as customerid, ag.name as accountgroupname, "
-    "c.name as customername "
-    "FROM pricingrule p "
-    "INNER JOIN product ON p.productinclid = product.id "
-    "INNER JOIN accountgroup ag ON p.customerinclid = ag.id "
-    "INNER JOIN accountgrouprelation agr ON agr.groupid = ag.id "
-    "INNER JOIN customer c ON agr.accountid = c.accountid "
-    "WHERE p.productincltypeid = 2 AND p.customerincltypeid = 3"
-)
-
-# https://www.fishbowlinventory.com/files/databasedictionary/2017/tables/product.html
-PRODUCTS_SQL = """
-SELECT
-    P.*,
-    PART.STDCOST AS StandardCost,
-    PART.TYPEID as TypeID
-    {ci_fields}
-FROM PRODUCT P
-INNER JOIN PART ON P.PARTID = PART.ID
-{custom_joins}
-"""
-
-# https://www.fishbowlinventory.com/files/databasedictionary/2017/tables/part.html
-PARTS_SQL = "SELECT * FROM Part"
-
-
-SERIAL_NUMBER_SQL = (
-    "SELECT sn.id, sn.serialId, sn.serialNum, p.num as PartNum, "
-    "t.dateCreated as DateCreated, t.dateLastModified as DateLastModified "
-    "FROM serialnum sn "
-    "LEFT JOIN serial s ON s.id = sn.serialId "
-    "LEFT JOIN tag t on t.id = s.tagId "
-    "LEFT JOIN part p on t.partId = p.id"
-)
 
 
 def UnicodeDictReader(utf8_data, **kwargs):
@@ -910,6 +872,33 @@ LEFT JOIN CUSTOMINTEGER CI ON CI.recordid = PART.ID AND CI.customfieldid = (
         response = self.send_message(request)
         check_status(response.find("FbiMsgsRs"))
         return objects.SalesOrder(response.find("SalesOrder"))
+
+    @require_connected
+    def get_sales_order_items(self, sales_order_id):
+        return self.basic_query(
+            SALES_ORDER_ITEMS.format(sales_order_id=sales_order_id), objects.SalesOrderItem
+        )
+
+    @require_connected
+    def get_sales_orders_list(self):
+        """
+        A generator that returns sales orders, and the sales order items.
+        """
+        for row in self.send_query(SALES_ORDER_LIST):
+            obj = objects.SalesOrder(row)
+
+            # TODO: Still need to get memo at some point if needed
+            row_objects = [r for r, _ in self.get_sales_order_items(row["id"])]
+            obj._mapped["Items"] = row_objects
+
+            if not obj:
+                continue
+
+            yield obj
+
+    @require_connected
+    def get_users(self):
+        return [u[0] for u in self.basic_query(USERS_SQL, objects.User)]
 
     @require_connected
     def get_available_imports(self):
