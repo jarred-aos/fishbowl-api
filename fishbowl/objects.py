@@ -416,6 +416,7 @@ class Serial(FishbowlObject):
 
 
 class SalesOrderItem(FishbowlObject):
+    id_field = "ID"
     fields = OrderedDict(
         [
             ("ID", int),
@@ -458,19 +459,21 @@ class Memo(FishbowlObject):
 
 
 class User(FishbowlObject):
+    id_field = "ID"
     fields = OrderedDict(
         [
             ("ID", int),
             ("Email", None),
-            ("firstName", None),
-            ("lastname", None),
-            ("phone", None),
-            ("username", None),
+            ("FirstName", None),
+            ("LastName", None),
+            ("Phone", None),
+            ("Username", None),
         ]
     )
 
 
 class SalesOrder(FishbowlObject):
+    id_field = "ID"
     fields = OrderedDict(
         [
             ("ID", int),

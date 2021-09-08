@@ -95,4 +95,13 @@ SERIAL_NUMBER_SQL = (
 )
 
 
-USERS_SQL = "SELECT id, email, firstName, lastname, phone, username FROM sysuser"
+USERS_SQL = """
+SELECT
+    id as ID,
+    email as Email,
+    firstName as FirstName,
+    lastName as LastName,
+    phone as Phone,
+    username as Username
+FROM sysuser
+"""
