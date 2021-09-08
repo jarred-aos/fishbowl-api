@@ -35,10 +35,9 @@ SELECT
     si.productNum AS ProductNumber, si.qtytofulfill AS Quantity, si.QtyFulfilled,
     si.QtyPicked, si.revLevel AS RevisionLevel, si.ShowItemFlag, si.SOID,
     si.soLineItem AS LineNumber, si.TaxableFlag, si.TotalPrice, si.TotalCost,
-    it.name AS ItemType, p.price AS ProductPrice, qb.name AS QuickBooksClassName,
+    si.typeid AS ItemType, p.price AS ProductPrice, qb.name AS QuickBooksClassName,
     sis.name AS Status, u.code AS UOMCode
 FROM soitem si
-LEFT JOIN soitemtype it ON si.typeid = it.id
 LEFT JOIN product p ON si.productId = p.id
 LEFT JOIN qbclass qb ON si.qbclassid = qb.id
 LEFT JOIN soitemstatus sis ON si.statusId = sis.id
