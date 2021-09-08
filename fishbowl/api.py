@@ -887,12 +887,12 @@ LEFT JOIN CUSTOMINTEGER CI ON CI.recordid = PART.ID AND CI.customfieldid = (
         for row in self.send_query(SALES_ORDER_LIST):
             obj = objects.SalesOrder(row)
 
+            if not obj:
+                continue
+
             # TODO: Still need to get memo at some point if needed
             row_objects = [r for r, _ in self.get_sales_order_items(row["id"])]
             obj._mapped["Items"] = row_objects
-
-            if not obj:
-                continue
 
             yield obj
 
