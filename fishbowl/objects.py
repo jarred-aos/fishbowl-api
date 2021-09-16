@@ -1,12 +1,14 @@
 from __future__ import unicode_literals
-
 import collections
 import copy
 import decimal
 import inspect
+import logging
 import sys
 from collections import OrderedDict
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 
 def fishbowl_datetime(text):
@@ -101,7 +103,7 @@ class FishbowlObject(collections.Mapping):
         if self.id_field and "ID" not in fields:
             items.append(("ID", int))
         # Load the data in without case sensitivity.
-        data_map = dict((k.lower(), k) for k in data)
+        data_map = {k.lower(): k for k in data}
         for field_name, parser in items:
             key = data_map.get(field_name.lower())
             value = data.get(key)
@@ -116,7 +118,7 @@ class FishbowlObject(collections.Mapping):
             elif isinstance(parser, list):
                 new_value = []
                 if parser:
-                    classes = dict((cls.__name__, cls) for cls in parser)
+                    classes = {cls.__name__: cls for cls in parser}
                 else:
                     classes = all_fishbowl_objects()
                 if not isinstance(value, list):
@@ -132,12 +134,12 @@ class FishbowlObject(collections.Mapping):
                 value = new_value
             elif isinstance(parser, FishbowlObject):
                 value = parser(data)
-            else:
-                if parser:
-                    try:
-                        value = parser(value)
-                    except Exception:
-                        continue
+            elif parser:
+                try:
+                    value = parser(value)
+                except Exception as e:
+                    logger.exception("Not parsing %s: %s correctly", key, value)
+                    continue
             output[field_name] = value
         if self.id_field and self.id_field not in output:
             value = output.pop("ID", None)
@@ -191,7 +193,7 @@ class FishbowlObject(collections.Mapping):
 
     def squash_obj(self, obj):
         if isinstance(obj, dict):
-            return dict((key, self.squash_obj(value)) for key, value in obj.items())
+            return {key: self.squash_obj(value) for key, value in obj.items()}
         if isinstance(obj, list):
             return [self.squash_obj(value) for value in obj]
         if isinstance(obj, FishbowlObject):
@@ -425,9 +427,9 @@ class SalesOrderItem(FishbowlObject):
             ("Description", None),
             ("CustomerPartNum", None),
             ("Taxable", fishbowl_boolean),
-            ("Quantity", int),
-            ("ProductPrice", int),
-            ("TotalPrice", int),
+            ("Quantity", decimal.Decimal),
+            ("ProductPrice", decimal.Decimal),
+            ("TotalPrice", decimal.Decimal),
             ("UOMCode", None),
             ("ItemType", int),
             ("Status", int),
@@ -437,17 +439,18 @@ class SalesOrderItem(FishbowlObject):
             ("KitItemFlag", fishbowl_boolean),
             ("ShowItemFlag", fishbowl_boolean),
             ("AdjustmentAmount", decimal.Decimal),
-            ("AdjustPercentage", int),
+            ("AdjustPercentage", decimal.Decimal),
             ("DateLastFulfillment", fishbowl_datetime),
             ("DateLastModified", fishbowl_datetime),
             ("DateScheduledFulfillment", fishbowl_datetime),
             ("ExchangeSOLineItem", int),
             ("ItemAdjustID", int),
-            ("QtyFulfilled", int),
-            ("QtyPicked", int),
-            ("RevisionLevel", int),
+            ("QtyFulfilled", decimal.Decimal),
+            ("QtyPicked", decimal.Decimal),
+            ("RevisionLevel", None),
             ("TotalCost", decimal.Decimal),
             ("TaxableFlag", fishbowl_boolean),
+            ("Note", None),
         ]
     )
 
