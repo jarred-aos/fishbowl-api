@@ -1,7 +1,3 @@
-SALES_ORDER_NUMBERS = """
-SELECT s.id, s.num FROM so s ORDER BY id DESC
-"""
-
 SALES_ORDER_LIST = """
 SELECT 
     s.id, s.billToAddress, s.billToCity, s.billToCountryId, s.billToName,

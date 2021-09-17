@@ -22,7 +22,6 @@ from .queries import (
     PRODUCTS_SQL,
     SALES_ORDER_ITEMS,
     SALES_ORDER_LIST,
-    SALES_ORDER_NUMBERS,
     SERIAL_NUMBER_SQL,
     USERS_SQL,
 )
@@ -873,11 +872,6 @@ LEFT JOIN CUSTOMINTEGER CI ON CI.recordid = PART.ID AND CI.customfieldid = (
         response = self.send_message(request)
         check_status(response.find("FbiMsgsRs"))
         return objects.SalesOrder(response.find("SalesOrder"))
-
-    @require_connected
-    def get_sales_orders_generator(self):
-        for row in self.send_query(SALES_ORDER_NUMBERS):
-            yield self.get_so(row["num"])
 
     @require_connected
     def get_sales_order_items(self, sales_order_id):
