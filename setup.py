@@ -10,7 +10,7 @@ with open(path.join(here, "README.rst"), encoding="utf-8") as f:
 
 setup(
     name="fishbowl-api",
-    version="1.5.2",
+    version="1.5.3",
     description="Fishbowl API",
     long_description=long_description,
     url="http://github.com/lincolnloop/fishbowl-api",
