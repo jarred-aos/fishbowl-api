@@ -62,6 +62,13 @@ def run():
             response = fishbowl.send_request(sys.argv[1], value)
             return etree.tostring(response).decode("utf-8")
 
+        # Get available imports and their headers
+        # imports = fishbowl.get_available_imports()
+        # for i in imports:
+        #     print(i)
+        #     headers = fishbowl.get_import_headers(i)
+        #     print(headers)
+
         # parts = fishbowl.get_parts_all()
         # print(parts)
 
