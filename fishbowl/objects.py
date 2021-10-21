@@ -107,6 +107,13 @@ class FishbowlObject(collections.Mapping):
             value = data.get(key)
             if value is None:
                 continue
+            # For some reason dateCreated on products started returning an
+            # empty string instead of null so in the case of datetime we want
+            # to return None. This might be okay for other empty strings, but
+            # I am trying to be precise in this change to limit problems.
+            if parser == fishbowl_datetime and value is '':
+                output[field_name] = None
+                continue
             if isinstance(parser, dict):
                 if not value:
                     continue

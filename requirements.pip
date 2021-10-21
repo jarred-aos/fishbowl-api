@@ -1,3 +1,4 @@
 ipdb==0.12.3
 ipython==7.10.1
 ipython-genutils==0.2.0
+lxml==4.6.3
