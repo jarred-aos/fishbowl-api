@@ -10,12 +10,12 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="fishbowl-api",
-    version="1.5.5",
+    version="1.6.0",
     description="Fishbowl API",
     long_description=long_description,
-    url="http://github.com/lincolnloop/fishbowl-api",
-    author="Chris Beaven",
-    author_email="smileychris@gmail.com",
+    url="http://github.com/patriotresearch/fishbowl-api",
+    author="chipolux",
+    author_email="nwright@atlaswhd.com",
     license="MIT",
     packages=["fishbowl"],
     install_requires=["lxml"],
