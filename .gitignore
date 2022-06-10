@@ -7,3 +7,4 @@ fishbowl/fishbowl.ini
 .vscode
 *.egg-info
 .mypy_cache
+.tool-versions
