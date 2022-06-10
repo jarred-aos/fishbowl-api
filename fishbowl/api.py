@@ -179,13 +179,16 @@ class BaseFishbowl:
 class JSONFishbowl(BaseFishbowl):
     auth_request = jsonrequests.Login
 
-    def connect(self, username, password, host, port, timeout=5):
+    def connect(self, username, password, host, port, timeout=5, encode_password=False):
         """
         Open socket stream, set timeout, and log in.
         """
-        password = base64.b64encode(hashlib.md5(password.encode(self.encoding)).digest()).decode(
-            "ascii"
-        )
+        # NOTE: Prior to FB 2022.6 you had to md5 hash and b64 encode the password
+        #       but now it only accepts the password in plaintext
+        if encode_password:
+            password = base64.b64encode(
+                hashlib.md5(password.encode(self.encoding)).digest()
+            ).decode("ascii")
 
         if self.connected:
             self.close()
@@ -339,13 +342,16 @@ class Fishbowl(BaseFishbowl):
 
     auth_request = xmlrequests.Login
 
-    def connect(self, username, password, host, port, timeout=5):
+    def connect(self, username, password, host, port, timeout=5, encode_password=False):
         """
         Open socket stream, set timeout, and log in.
         """
-        password = base64.b64encode(hashlib.md5(password.encode(self.encoding)).digest()).decode(
-            "ascii"
-        )
+        # NOTE: Prior to FB 2022.6 you had to md5 hash and b64 encode the password
+        #       but now it only accepts the password in plaintext
+        if encode_password:
+            password = base64.b64encode(
+                hashlib.md5(password.encode(self.encoding)).digest()
+            ).decode("ascii")
 
         if self.connected:
             self.close()
