@@ -90,7 +90,7 @@ class BaseFishbowl:
                 stream.connect((self.host, self.port))
                 break
             except socket.error as e:
-                msg = getattr(e, "strerror", None) or e.message
+                msg = getattr(e, "strerror", "") or getattr(e, "message", "")
                 if not retry:
                     logger.exception("Fishbowl API connection failure, giving up")
                     raise FishbowlConnectionError(msg)
