@@ -127,7 +127,9 @@ class BaseFishbowl:
             self._connected = False
             self.stream.close()
             if has_key:
-                check_status(logout_response.find("FbiMsgsRs"), expected="1010")
+                check_status(
+                    logout_response.find("FbiMsgsRs"), expected=(statuscodes.SUCCESS, "1010")
+                )
         except Exception:
             if not skip_errors:
                 logger.exception(
@@ -1042,9 +1044,11 @@ def check_status(element, expected=statuscodes.SUCCESS, allow_none=False):
     """
     code = element.get("statusCode")
     message = element.get("statusMessage")
+    if not isinstance(expected, (list, tuple)):
+        expected = [expected]
     if message is None:
         message = statuscodes.get_status(code)
-    if str(code) != expected and (code is not None or not allow_none):
+    if (str(code) not in expected) and (code is not None or not allow_none):
         raise FishbowlError(message)
     return message
 
