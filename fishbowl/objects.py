@@ -5,7 +5,7 @@ import decimal
 import inspect
 import logging
 import sys
-from collections import OrderedDict
+from collections import OrderedDict, Mapping
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -49,7 +49,7 @@ def strip_text(el):
     return ""
 
 
-class FishbowlObject(collections.Mapping):
+class FishbowlObject(Mapping):
     id_field = None
     name_attr = None
     encoding = "utf-8"
