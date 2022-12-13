@@ -5,7 +5,8 @@ import decimal
 import inspect
 import logging
 import sys
-from collections import OrderedDict, Mapping
+from collections import OrderedDict
+from collections.abc import Mapping
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
